@@ -1,0 +1,25 @@
+{
+  "name": "my-budget-api",
+  "version": "1.0.0",
+  "description": "api for the my-budget app",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon server.js",
+    "knex": "knex"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "mocha": "^4.0.1",
+    "mock-knex": "^0.3.9",
+    "pg": "^7.3.0"
+  },
+  "devDependencies": {
+    "knex": "^0.13.0",
+    "nodemon": "^1.12.1"
+  }
+}
