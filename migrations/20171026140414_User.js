@@ -1,17 +1,17 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema
-    .createTable("User", t => {
-      t.increments("Id");
-      t.string("Username").notNullable();
-      t.string("Password", 60).notNullable();
+    .createTable("users", t => {
+      t.increments("id");
+      t.string("username").notNullable();
+      t.string("password", 60).notNullable();
       t
-        .string("Email")
+        .string("email")
         .unique()
         .notNullable();
     })
     .then(() => {});
 };
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTable("User");
+exports.down = function(knex) {
+  return knex.schema.dropTable("users");
 };

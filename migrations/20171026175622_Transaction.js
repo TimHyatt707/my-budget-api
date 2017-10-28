@@ -1,24 +1,24 @@
-exports.up = function(knex, Promise) {
-  return knex.schema.createTable("Transaction", t => {
-    t.increments("Id");
+exports.up = function(knex) {
+  return knex.schema.createTable("transactions", t => {
+    t.increments("id");
     t
-      .integer("UserId")
-      .references("Id")
-      .inTable("User")
+      .integer("user_id")
+      .references("id")
+      .inTable("user")
       .notNullable()
       .onDelete("CASCADE");
     t
-      .integer("CategoryId")
-      .references("Id")
-      .inTable("Category")
+      .integer("category_id")
+      .references("id")
+      .inTable("categories")
       .notNullable()
       .onDelete("CASCADE");
-    t.string("Name").notNullable();
-    t.decimal("Amount", 2).notNullable();
-    t.timestamp("CreatedAt").defaultTo(knex.fn.now());
+    t.string("name").notNullable();
+    t.decimal("amount", 2).notNullable();
+    t.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTable("Transaction");
+exports.down = function(knex) {
+  return knex.schema.dropTable("transactions");
 };

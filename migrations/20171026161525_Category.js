@@ -1,17 +1,17 @@
-exports.up = function(knex, Promise) {
-  return knex.schema.createTable("Category", t => {
-    t.increments("Id");
+exports.up = function(knex) {
+  return knex.schema.createTable("categories", t => {
+    t.increments("id");
     t
-      .integer("UserId")
-      .references("Id")
-      .inTable("User")
+      .integer("user_id")
+      .references("id")
+      .inTable("users")
       .notNullable()
       .onDelete("CASCADE");
-    t.string("Name").notNullable();
-    t.integer("Limit").notNullable();
+    t.string("name").notNullable();
+    t.integer("limit").notNullable();
   });
 };
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTable("Category");
+exports.down = function(knex) {
+  return knex.schema.dropTable("categories");
 };
