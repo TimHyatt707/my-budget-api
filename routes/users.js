@@ -1,7 +1,7 @@
 const express = require("express");
 const Boom = require("Boom");
 const router = express.Router();
-const usersController = require("./../controllers/usersController");
+const usersController = require("./../controllers/UsersController");
 
 router.get("/users/:userid(\\d+)/", usersController.getUserById);
 router.get("/users/:userid(\\d+)/", usersController.getTransactionsByUser);

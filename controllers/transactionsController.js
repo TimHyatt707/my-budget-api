@@ -1,10 +1,10 @@
-const transactionService = require("./../services/transactionService");
+const TransactionService = require("./../services/TransactionService");
 
-class transactionsController {
+class TransactionsController {
   async updateTransactionById(req, res, next) {
     try {
       const transactionId = parseInt(req.params.transactionid);
-      const transaction = await transactionService.getTransactionByID(
+      const transaction = await TransactionService.getTransactionByID(
         transactionId
       );
       res.json(transaction);
@@ -15,7 +15,7 @@ class transactionsController {
   async deleteTransactionById(req, res, next) {
     try {
       const transactionId = parseInt(req.params.transactionid);
-      const transaction = await transactionService.deleteTransactionById(
+      const transaction = await TransactionService.deleteTransactionById(
         transactionId
       );
       res.json(transaction);
@@ -25,4 +25,4 @@ class transactionsController {
   }
 }
 
-module.exports = transactionsController;
+module.exports = TransactionsController;

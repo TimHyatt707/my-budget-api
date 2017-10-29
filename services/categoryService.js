@@ -1,10 +1,10 @@
-const categoryRepository = require("./../repositories/categoryRepository");
+const CategoryRepository = require("./../repositories/CategoryRepository");
 
-class categoryService {
+class CategoryService {
   async getByUserId(id) {
     try {
       //TO DO: User authentication
-      const categories = await categoryRepository.getByUser(id);
+      const categories = await CategoryRepository.getByUser(id);
       return categories;
     } catch (error) {
       //TO DO: error handling
@@ -14,7 +14,7 @@ class categoryService {
   async createCategory(attributes) {
     try {
       const attributes = Object.assign({}, attributes);
-      const category = await categoryRepository.create(attributes);
+      const category = await CategoryRepository.create(attributes);
       return category;
     } catch (error) {
       error;
@@ -23,7 +23,7 @@ class categoryService {
   async update(id, changes) {
     try {
       const attributes = Object.assign({}, changes);
-      const updatedCategory = await categoryRepository.update(attributes);
+      const updatedCategory = await CategoryRepository.update(attributes);
       return updatedCategory;
     } catch (error) {
       error;
@@ -31,7 +31,7 @@ class categoryService {
   }
   async delete(id) {
     try {
-      const deletedCategory = await categoryRepository.delete(id);
+      const deletedCategory = await CategoryRepository.delete(id);
       return deletedCategory;
     } catch (error) {
       error;
@@ -39,4 +39,4 @@ class categoryService {
   }
 }
 
-module.exports = categoryService;
+module.exports = CategoryService;
