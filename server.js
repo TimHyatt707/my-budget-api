@@ -6,11 +6,13 @@ const PORT = parseInt(process.env.PORT) || 8000;
 const usersRouter = require("./routes/users");
 const categoriesRouter = require("./routes/categories");
 const transactionsRouter = require("./routes/transactions");
+const authenticationRouter = require("./routes/authentication");
 
 const server = express();
 server.use(bodyParser.json());
 
 server.use(usersRouter);
+server.use(authenticationRouter);
 server.use(categoriesRouter);
 server.use(transactionsRouter);
 
