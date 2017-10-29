@@ -11,8 +11,8 @@ const authenticationRouter = require("./routes/authentication");
 const server = express();
 server.use(bodyParser.json());
 
-server.use(usersRouter);
 server.use(authenticationRouter);
+server.use(usersRouter);
 server.use(categoriesRouter);
 server.use(transactionsRouter);
 

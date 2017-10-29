@@ -32,8 +32,8 @@ class usersController {
   }
   async createUser(req, res, next) {
     try {
-      const userObject = req.body;
-      const user = await userService.createUser(userObject);
+      const attributes = req.body;
+      const user = await userService.createUser(attributes);
       res.json(user);
     } catch (error) {
       next(error);
@@ -60,7 +60,8 @@ class usersController {
   async updateUser(req, res, next) {
     try {
       const changes = req.body;
-      const updatedUser = await userService.updatedUser(changes);
+      const userId = req.params.userid;
+      const updatedUser = await userService.updateUser(userId, changes);
       res.json(updatedUser);
     } catch (error) {
       next(error);
