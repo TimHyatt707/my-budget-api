@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const secret = require("./../env.JWT_KEY");
-const UserRepository = require("./../UserRepository");
+const secret = require("./../env");
+const UserRepository = require("./../repositories/UserRepository");
 const userRepository = new UserRepository();
 
 class AuthenticationService {
@@ -31,7 +31,7 @@ class AuthenticationService {
           iat: timeIssued,
           sub: user.id
         },
-        secret
+        secret.JWT_KEY
       );
     } catch (error) {
       return error;

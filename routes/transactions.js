@@ -14,6 +14,6 @@ router.delete(
   transactionsController.deleteTransactionById
 );
 
-router.all("*", next => next(Boom.Method("Method not allowed")));
+router.all("/transactions", next => next(Boom.Method("Method not allowed")));
 
 module.exports = router;

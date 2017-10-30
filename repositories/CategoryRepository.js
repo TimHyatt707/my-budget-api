@@ -8,7 +8,7 @@ class CategoryRepository {
         .returning("*");
       return records;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async create(attributes) {
@@ -18,7 +18,7 @@ class CategoryRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async update(id, changes) {
@@ -29,7 +29,7 @@ class CategoryRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async delete(id) {
@@ -40,7 +40,7 @@ class CategoryRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
     }
   }
 }

@@ -3,8 +3,8 @@ const knex = require("./../knex");
 class UserRepository {
   async create(credentials) {
     try {
-      const [record] = await knex("users")
-        .insert("credentials")
+      const record = await knex("users")
+        .insert(credentials)
         .returning("*");
       return record;
     } catch (error) {
@@ -13,7 +13,7 @@ class UserRepository {
   }
   async getByEmail(email) {
     try {
-      const [record] = await knex("users")
+      const record = await knex("users")
         .where("email", email)
         .returning("*");
       return record;

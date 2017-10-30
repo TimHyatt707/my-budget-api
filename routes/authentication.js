@@ -6,6 +6,6 @@ const authenticationController = new AuthenticationController();
 
 router.post("/login", authenticationController.login);
 
-router.all("*", next => next(Boom.Method("Method not allowed")));
+router.all("/login", next => next(Boom.methodNotAllowed("Method not allowed")));
 
 module.exports = router;

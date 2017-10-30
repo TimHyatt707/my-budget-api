@@ -14,6 +14,6 @@ router.delete(
   categoriesController.deleteCategoryById
 );
 
-router.all("*", next => next(Boom.Method("Method not allowed")));
+router.all("/categories", next => next(Boom.Method("Method not allowed")));
 
 module.exports = router;

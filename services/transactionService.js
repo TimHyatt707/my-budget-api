@@ -1,40 +1,41 @@
 const TransactionRepository = require("./../repositories/TransactionRepository");
+const transactionRepository = new TransactionRepository();
 
 class TransactionService {
   async getByUserId(id) {
     try {
       //TO DO: User authentication
-      const categories = await TransactionRepository.getByUser(id);
+      const categories = await transactionRepository.getByUser(id);
       return categories;
     } catch (error) {
       //TO DO: error handling
-      error;
+      return error;
     }
   }
   async createTransaction(attributes) {
     try {
-      const attributes = Object.assign({}, attributes);
-      const transaction = await TransactionRepository.create(attributes);
+      const transactionObject = Object.assign({}, attributes);
+      const transaction = await transactionRepository.create(transactionObject);
       return transaction;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async update(id, changes) {
     try {
       const attributes = Object.assign({}, changes);
-      const updatedTransaction = await TransactionRepository.update(attributes);
+      const updatedTransaction = await transactionRepository.update(attributes);
       return updatedTransaction;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async delete(id) {
     try {
-      const deletedTransaction = await TransactionRepository.delete(id);
+      const deletedTransaction = await transactionRepository.delete(id);
       return deletedTransaction;
     } catch (error) {
-      error;
+      return error;
     }
   }
 }
