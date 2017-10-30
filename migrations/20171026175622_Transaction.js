@@ -14,7 +14,7 @@ exports.up = function(knex) {
       .notNullable()
       .onDelete("CASCADE");
     t.string("name").notNullable();
-    t.decimal("amount", 2).notNullable();
+    t.decimal("amount").notNullable();
     t.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
