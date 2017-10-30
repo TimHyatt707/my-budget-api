@@ -19,6 +19,9 @@ class UsersController {
     try {
       const userId = parseInt(req.params.userid);
       const transactions = await transactionService.getByUserId(userId);
+      if (!transactions.length) {
+        res.status(404);
+      }
       res.json(transactions);
     } catch (error) {
       next(error);
@@ -28,6 +31,9 @@ class UsersController {
     try {
       const userId = parseInt(req.params.userid);
       const categories = await categoryService.getByUserId(userId);
+      if (!categories.length) {
+        res.status(404);
+      }
       res.json(categories);
     } catch (error) {
       next(error);

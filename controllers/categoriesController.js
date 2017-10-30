@@ -5,7 +5,8 @@ class CategoriesController {
   async updateCategoryById(req, res, next) {
     try {
       const categoryId = parseInt(req.params.categoryid);
-      const category = await categoryService.getCategoryByID(categoryId);
+      const attributes = req.body;
+      const category = await categoryService.update(categoryId, attributes);
       res.json(category);
     } catch (error) {
       next(error);
@@ -14,7 +15,7 @@ class CategoriesController {
   async deleteCategoryById(req, res, next) {
     try {
       const categoryId = parseInt(req.params.categoryid);
-      const category = await categoryService.deleteCategoryById(categoryId);
+      const category = await categoryService.delete(categoryId);
       res.json(category);
     } catch (error) {
       next(error);

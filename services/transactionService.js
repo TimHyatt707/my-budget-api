@@ -24,7 +24,10 @@ class TransactionService {
   async update(id, changes) {
     try {
       const attributes = Object.assign({}, changes);
-      const updatedTransaction = await transactionRepository.update(attributes);
+      const updatedTransaction = await transactionRepository.update(
+        id,
+        attributes
+      );
       return updatedTransaction;
     } catch (error) {
       return error;

@@ -5,8 +5,10 @@ class TransactionsController {
   async updateTransactionById(req, res, next) {
     try {
       const transactionId = parseInt(req.params.transactionid);
-      const transaction = await transactionService.getTransactionByID(
-        transactionId
+      const attributes = req.body;
+      const transaction = await transactionService.update(
+        transactionId,
+        attributes
       );
       res.json(transaction);
     } catch (error) {
@@ -16,9 +18,7 @@ class TransactionsController {
   async deleteTransactionById(req, res, next) {
     try {
       const transactionId = parseInt(req.params.transactionid);
-      const transaction = await transactionService.deleteTransactionById(
-        transactionId
-      );
+      const transaction = await transactionService.delete(transactionId);
       res.json(transaction);
     } catch (error) {
       next(error);

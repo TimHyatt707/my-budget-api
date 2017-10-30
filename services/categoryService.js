@@ -24,7 +24,7 @@ class CategoryService {
   async update(id, changes) {
     try {
       const attributes = Object.assign({}, changes);
-      const updatedCategory = await categoryRepository.update(attributes);
+      const updatedCategory = await categoryRepository.update(id, attributes);
       return updatedCategory;
     } catch (error) {
       return error;
