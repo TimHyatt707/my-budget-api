@@ -80,8 +80,8 @@ exports.seed = function(knex, Promise) {
             },
             {
               id: 4,
-              user_id: 2,
-              category_id: 1,
+              user_id: 1,
+              category_id: 2,
               name: "Gasoline",
               amount: 30,
               created_at: "2016-06-26 14:26:16 UTC"

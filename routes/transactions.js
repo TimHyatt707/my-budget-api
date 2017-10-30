@@ -1,7 +1,8 @@
 const express = require("express");
 const Boom = require("Boom");
 const router = express.Router();
-const transactionsController = require("./../controllers/TransactionsController");
+const TransactionsController = require("./../controllers/TransactionsController");
+const transactionsController = new TransactionsController();
 
 router.patch(
   "/transactions/:transactionid",

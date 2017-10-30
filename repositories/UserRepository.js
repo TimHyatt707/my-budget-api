@@ -8,7 +8,17 @@ class UserRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
+    }
+  }
+  async getByEmail(email) {
+    try {
+      const [record] = await knex("users")
+        .where("email", email)
+        .returning("*");
+      return record;
+    } catch (error) {
+      return error;
     }
   }
   async getById(id) {
@@ -18,7 +28,7 @@ class UserRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async update(id, changes) {
@@ -29,7 +39,7 @@ class UserRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
     }
   }
   async delete(id) {
@@ -40,7 +50,7 @@ class UserRepository {
         .returning("*");
       return record;
     } catch (error) {
-      error;
+      return error;
     }
   }
 }

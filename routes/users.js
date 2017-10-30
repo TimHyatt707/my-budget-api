@@ -1,7 +1,8 @@
 const express = require("express");
 const Boom = require("Boom");
 const router = express.Router();
-const usersController = require("./../controllers/UsersController");
+const UsersController = require("./../controllers/UsersController");
+const usersController = new UsersController();
 
 router.get("/users/:userid(\\d+)/", usersController.getUserById);
 router.get("/users/:userid(\\d+)/", usersController.getTransactionsByUser);
@@ -13,7 +14,6 @@ router.post(
   "/users/:userid(\\d+)/transactions",
   usersController.createTransaction
 );
-router.post("/users/login", usersController.loginUser);
 
 router.patch("/users/:userid(\\d+)/", usersController.updateUser);
 

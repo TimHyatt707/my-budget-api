@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const UserRepository = require("./../repositories/UserRepository");
 const omit = require("lodash.omit");
 const pick = require("lodash.pick");

@@ -39,7 +39,7 @@ class UsersController {
       next(error);
     }
   }
-  async createTransactionByUser(req, res, next) {
+  async createTransaction(req, res, next) {
     try {
       const userId = req.params.userid;
       const transaction = await TransactionService.createTransaction(userId);
@@ -48,7 +48,7 @@ class UsersController {
       next(error);
     }
   }
-  async createCategoryByUser(req, res, next) {
+  async createCategory(req, res, next) {
     try {
       const userId = req.params.userid;
       const category = await CategoryService.createCategory(userId);
