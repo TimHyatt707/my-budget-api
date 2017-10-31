@@ -17,28 +17,45 @@ class CategoryService {
       return error;
     }
   }
-  async createCategory(attributes, token) {
+  async createCategory(id, attributes, authentication) {
     try {
-      const categoryObject = Object.assign({}, attributes);
-      const category = await categoryRepository.create(categoryObject);
-      return category;
+      const accessToken = await jwt.verify(
+        authentication.token,
+        secret.JWT_KEY,
+        { sub: id }
+      );
+      if (accessToken.sub === id) {
+        const categoryObject = Object.assign({}, attributes);
+        const category = await categoryRepository.create(categoryObject);
+        return category;
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async update(id, changes, token) {
+  async update(id, changes, authentication) {
     try {
-      const attributes = Object.assign({}, changes);
-      const updatedCategory = await categoryRepository.update(id, attributes);
-      return updatedCategory;
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const attributes = Object.assign({}, changes);
+        const updatedCategory = await categoryRepository.update(id, attributes);
+        return updatedCategory;
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async delete(id, token) {
+  async delete(id, authentication) {
     try {
-      const deletedCategory = await categoryRepository.delete(id);
-      return deletedCategory;
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const deletedCategory = await categoryRepository.delete(id);
+        return deletedCategory;
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }

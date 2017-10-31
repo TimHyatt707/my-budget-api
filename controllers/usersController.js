@@ -13,6 +13,7 @@ class UsersController {
       const user = await userService.getUserById(userId, token);
       if (
         user.message === "invalid signature" ||
+        user.message === "jwt must be provided" ||
         user === "invalid signature"
       ) {
         res.status(401).json({ message: "Unauthorized" });
@@ -28,6 +29,7 @@ class UsersController {
       const transactions = await transactionService.getByUserId(userId, token);
       if (
         transactions.message === "invalid signature" ||
+        transactions.message === "jwt must be provided" ||
         transactions === "invalid signature"
       ) {
         res.status(401).json({ message: "Unauthorized" });
@@ -43,6 +45,7 @@ class UsersController {
       const categories = await categoryService.getByUserId(userId, token);
       if (
         categories.message === "invalid signature" ||
+        categories.message === "jwt must be provided" ||
         categories === "invalid signature"
       ) {
         res.status(401).json({ message: "Unauthorized" });
@@ -65,13 +68,15 @@ class UsersController {
       const attributes = Object.assign({}, req.body);
       const token = Object.assign({}, attributes);
       delete attributes.token;
-      attributes.user_id = parseInt(req.params.userid);
+      const userId = parseInt(req.params.userid);
       const transaction = await transactionService.createTransaction(
+        userId,
         attributes,
         token
       );
       if (
         transaction.message === "invalid signature" ||
+        transaction.message === "jwt must be provided" ||
         transaction === "invalid signature"
       ) {
         res.status(401).json({ message: "Unauthorized" });
@@ -83,10 +88,21 @@ class UsersController {
   async createCategory(req, res, next) {
     try {
       const attributes = req.body;
-      const token = Object.assign({}, attributes.token);
-      attributes.user_id = parseInt(req.params.userid);
-      const category = await categoryService.createCategory(attributes, token);
-      res.json(category);
+      const token = Object.assign({}, attributes);
+      const userId = parseInt(req.params.userid);
+      delete attributes.token;
+      const category = await categoryService.createCategory(
+        userId,
+        attributes,
+        token
+      );
+      if (
+        category.message === "invalid signature" ||
+        category.message === "jwt must be provided" ||
+        category === "invalid signature"
+      ) {
+        res.status(401).json({ message: "Unauthorized" });
+      } else res.json(category);
     } catch (error) {
       next(error);
     }
@@ -94,10 +110,17 @@ class UsersController {
   async updateUser(req, res, next) {
     try {
       const changes = req.body;
-      const token = Object.assign({}, changes.token);
+      const token = Object.assign({}, changes);
+      delete changes.token;
       const userId = req.params.userid;
       const updatedUser = await userService.updateUser(userId, changes, token);
-      res.json(updatedUser);
+      if (
+        updatedUser.message === "invalid signature" ||
+        updatedUser.message === "jwt must be provided" ||
+        updatedUser === "invalid signature"
+      ) {
+        res.status(401).json({ message: "Unauthorized" });
+      } else res.json(updatedUser);
     } catch (error) {
       next(error);
     }
@@ -107,7 +130,13 @@ class UsersController {
       const userId = req.params.userid;
       const token = Object.assign({}, req.body);
       const deletedUser = await userService.deleteUser(userId, token);
-      res.json(deletedUser);
+      if (
+        deletedUser.message === "invalid signature" ||
+        deletedUser.message === "jwt must be provided" ||
+        deletedUser === "invalid signature"
+      ) {
+        res.status(401).json({ message: "Unauthorized" });
+      } else res.json(deletedUser);
     } catch (error) {
       next(error);
     }

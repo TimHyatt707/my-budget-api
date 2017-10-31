@@ -21,16 +21,16 @@ class TransactionService {
       return error;
     }
   }
-  async createTransaction(attributes, authentication) {
+  async createTransaction(id, attributes, authentication) {
     try {
       const accessToken = await jwt.verify(
         authentication.token,
         secret.JWT_KEY,
         {
-          sub: attributes.user_id
+          sub: id
         }
       );
-      if (accessToken.sub === attributes.user_id) {
+      if (accessToken.sub === id) {
         const transactionObject = Object.assign({}, attributes);
         const transaction = await transactionRepository.create(
           transactionObject
@@ -41,22 +41,32 @@ class TransactionService {
       return error;
     }
   }
-  async update(id, changes, token) {
+  async update(id, changes, authentication) {
     try {
-      const attributes = Object.assign({}, changes);
-      const updatedTransaction = await transactionRepository.update(
-        id,
-        attributes
-      );
-      return updatedTransaction;
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const attributes = Object.assign({}, changes);
+        const updatedTransaction = await transactionRepository.update(
+          id,
+          attributes
+        );
+        return updatedTransaction;
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async delete(id, token) {
+  async delete(id, authentication) {
     try {
-      const deletedTransaction = await transactionRepository.delete(id);
-      return deletedTransaction;
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const deletedTransaction = await transactionRepository.delete(id);
+        return deletedTransaction;
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }

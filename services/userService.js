@@ -9,14 +9,12 @@ class UserService {
   async createUser(attributes) {
     try {
       const credentials = Object.assign({}, attributes);
-      //TO DO : VALIDATION
       const hashedPassword = await bcrypt.hash(credentials.password, 12);
       delete credentials.password;
       credentials.hashed_password = hashedPassword;
       const user = await userRepository.create(credentials);
       return pick(user[0], ["id", "username", "email"]);
     } catch (error) {
-      //TO DO: ERROR HANDLING WITH VALIDATOR
       return error;
     }
   }
@@ -24,7 +22,8 @@ class UserService {
     try {
       const accessToken = await jwt.verify(
         authentication.token,
-        secret.JWT_KEY
+        secret.JWT_KEY,
+        { sub: id }
       );
       if (accessToken.sub === id) {
         const user = await userRepository.getById(id);
@@ -34,20 +33,29 @@ class UserService {
       return error;
     }
   }
-  async updateUser(id, changes, token) {
+  async updateUser(id, changes, authentication) {
     try {
-      //TO DO: AUTHENTICATION
-      const changesObject = Object.assign({}, changes);
-      const updatedUser = await userRepository.update(id, changesObject);
-      return pick(updatedUser, ["id", "username", "email"]);
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const changesObject = Object.assign({}, changes);
+        const updatedUser = await userRepository.update(id, changesObject);
+        return pick(updatedUser, ["id", "username", "email"]);
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async deleteUser(id, token) {
+  async deleteUser(id, authentication) {
     try {
-      const deletedUser = await userRepository.delete(id);
-      return pick(deletedUser, ["id", "username", "email"]);
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const deletedUser = await userRepository.delete(id);
+        return pick(deletedUser, ["id", "username", "email"]);
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
