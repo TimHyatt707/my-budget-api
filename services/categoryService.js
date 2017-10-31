@@ -1,18 +1,23 @@
 const CategoryRepository = require("./../repositories/CategoryRepository");
 const categoryRepository = new CategoryRepository();
+const jwt = require("jsonwebtoken");
+const secret = require("./../env");
 
 class CategoryService {
-  async getByUserId(id) {
+  async getByUserId(id, authentication) {
     try {
-      //TO DO: User authentication
-      const categories = await categoryRepository.getByUser(id);
-      return categories;
+      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+        sub: id
+      });
+      if (accessToken.sub === id) {
+        const categories = await categoryRepository.getByUser(id);
+        return categories;
+      } else throw "invalid signature";
     } catch (error) {
-      //TO DO: error handling
       return error;
     }
   }
-  async createCategory(attributes) {
+  async createCategory(attributes, token) {
     try {
       const categoryObject = Object.assign({}, attributes);
       const category = await categoryRepository.create(categoryObject);
@@ -21,7 +26,7 @@ class CategoryService {
       return error;
     }
   }
-  async update(id, changes) {
+  async update(id, changes, token) {
     try {
       const attributes = Object.assign({}, changes);
       const updatedCategory = await categoryRepository.update(id, attributes);
@@ -30,7 +35,7 @@ class CategoryService {
       return error;
     }
   }
-  async delete(id) {
+  async delete(id, token) {
     try {
       const deletedCategory = await categoryRepository.delete(id);
       return deletedCategory;

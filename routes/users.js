@@ -7,11 +7,11 @@ const usersController = new UsersController();
 router.get("/users/:userid(\\d+)/", usersController.getUserById);
 router.get(
   "/users/:userid(\\d+)/categories",
-  usersController.getTransactionsByUser
+  usersController.getCategoriesByUser
 );
 router.get(
   "/users/:userid(\\d+)/transactions",
-  usersController.getCategoriesByUser
+  usersController.getTransactionsByUser
 );
 
 router.post("/users", usersController.createUser);

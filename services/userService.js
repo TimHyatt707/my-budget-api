@@ -1,4 +1,6 @@
 const bcrypt = require("bcryptjs");
+const secret = require("./../env");
+const jwt = require("jsonwebtoken");
 const UserRepository = require("./../repositories/UserRepository");
 const userRepository = new UserRepository();
 const pick = require("lodash.pick");
@@ -18,16 +20,21 @@ class UserService {
       return error;
     }
   }
-  async getUserById(id) {
+  async getUserById(id, authentication) {
     try {
-      //TO DO: AUTHENTICATION
-      const user = await userRepository.getById(id);
-      return pick(user, ["id", "username", "email"]);
+      const accessToken = await jwt.verify(
+        authentication.token,
+        secret.JWT_KEY
+      );
+      if (accessToken.sub === id) {
+        const user = await userRepository.getById(id);
+        return pick(user, ["id", "username", "email"]);
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async updateUser(id, changes) {
+  async updateUser(id, changes, token) {
     try {
       //TO DO: AUTHENTICATION
       const changesObject = Object.assign({}, changes);
@@ -37,7 +44,7 @@ class UserService {
       return error;
     }
   }
-  async deleteUser(id) {
+  async deleteUser(id, token) {
     try {
       const deletedUser = await userRepository.delete(id);
       return pick(deletedUser, ["id", "username", "email"]);

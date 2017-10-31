@@ -1,27 +1,47 @@
 const TransactionRepository = require("./../repositories/TransactionRepository");
 const transactionRepository = new TransactionRepository();
+const jwt = require("jsonwebtoken");
+const secret = require("./../env");
 
 class TransactionService {
-  async getByUserId(id) {
+  async getByUserId(id, authentication) {
     try {
-      //TO DO: User authentication
-      const categories = await transactionRepository.getByUser(id);
-      return categories;
-    } catch (error) {
-      //TO DO: error handling
-      return error;
-    }
-  }
-  async createTransaction(attributes) {
-    try {
-      const transactionObject = Object.assign({}, attributes);
-      const transaction = await transactionRepository.create(transactionObject);
-      return transaction;
+      const accessToken = await jwt.verify(
+        authentication.token,
+        secret.JWT_KEY,
+        {
+          sub: id
+        }
+      );
+      if (accessToken.sub === id) {
+        const transactions = await transactionRepository.getByUser(id);
+        return transactions;
+      } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async update(id, changes) {
+  async createTransaction(attributes, authentication) {
+    try {
+      const accessToken = await jwt.verify(
+        authentication.token,
+        secret.JWT_KEY,
+        {
+          sub: attributes.user_id
+        }
+      );
+      if (accessToken.sub === attributes.user_id) {
+        const transactionObject = Object.assign({}, attributes);
+        const transaction = await transactionRepository.create(
+          transactionObject
+        );
+        return transaction;
+      } else throw "invalid signature";
+    } catch (error) {
+      return error;
+    }
+  }
+  async update(id, changes, token) {
     try {
       const attributes = Object.assign({}, changes);
       const updatedTransaction = await transactionRepository.update(
@@ -33,7 +53,7 @@ class TransactionService {
       return error;
     }
   }
-  async delete(id) {
+  async delete(id, token) {
     try {
       const deletedTransaction = await transactionRepository.delete(id);
       return deletedTransaction;

@@ -5,23 +5,23 @@ const UserRepository = require("./../repositories/UserRepository");
 const userRepository = new UserRepository();
 
 class AuthenticationService {
-  async authenticate(credentials) {
+  async authenticate(loginCredentials) {
     try {
-      const credentials = Object.assign({}, credentials);
-      if (!credentials.username || !credentials.password) {
-        throw "Invalid username/password";
+      const credentials = Object.assign({}, loginCredentials);
+      if (!credentials.email || !credentials.password) {
+        throw "Invalid email/password";
       }
       //TO DO: VALIDATOR
       const user = await userRepository.getByEmail(credentials.email);
-      if (!user) {
-        throw "User not found";
+      if (!user.length) {
+        throw "Invalid email";
       }
       const passwordCheck = await bcrypt.compare(
         credentials.password,
-        user.hashed_password
+        user[0].hashed_password
       );
       if (!passwordCheck) {
-        throw "Wrong password";
+        throw "Bad password";
       }
       const timeIssued = Math.floor(Date.now() / 1000);
       return jwt.sign(
@@ -29,7 +29,7 @@ class AuthenticationService {
           iss: "mybudget",
           aud: "mybudget",
           iat: timeIssued,
-          sub: user.id
+          sub: user[0].id
         },
         secret.JWT_KEY
       );
