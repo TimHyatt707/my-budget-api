@@ -20,11 +20,9 @@ class UserService {
   }
   async getUserById(id, authentication) {
     try {
-      const accessToken = await jwt.verify(
-        authentication.token,
-        secret.JWT_KEY,
-        { sub: id }
-      );
+      const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
+        sub: id
+      });
       if (accessToken.sub === id) {
         const user = await userRepository.getById(id);
         return pick(user, ["id", "username", "email"]);
@@ -35,7 +33,7 @@ class UserService {
   }
   async updateUser(id, changes, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
@@ -49,7 +47,7 @@ class UserService {
   }
   async deleteUser(id, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {

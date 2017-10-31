@@ -6,7 +6,7 @@ const secret = require("./../env");
 class CategoryService {
   async getByUserId(id, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
@@ -19,11 +19,9 @@ class CategoryService {
   }
   async createCategory(id, attributes, authentication) {
     try {
-      const accessToken = await jwt.verify(
-        authentication.token,
-        secret.JWT_KEY,
-        { sub: id }
-      );
+      const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
+        sub: id
+      });
       if (accessToken.sub === id) {
         const categoryObject = Object.assign({}, attributes);
         const category = await categoryRepository.create(categoryObject);

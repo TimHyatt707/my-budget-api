@@ -6,13 +6,9 @@ const secret = require("./../env");
 class TransactionService {
   async getByUserId(id, authentication) {
     try {
-      const accessToken = await jwt.verify(
-        authentication.token,
-        secret.JWT_KEY,
-        {
-          sub: id
-        }
-      );
+      const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
+        sub: id
+      });
       if (accessToken.sub === id) {
         const transactions = await transactionRepository.getByUser(id);
         return transactions;
@@ -23,13 +19,9 @@ class TransactionService {
   }
   async createTransaction(id, attributes, authentication) {
     try {
-      const accessToken = await jwt.verify(
-        authentication.token,
-        secret.JWT_KEY,
-        {
-          sub: id
-        }
-      );
+      const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
+        sub: id
+      });
       if (accessToken.sub === id) {
         const transactionObject = Object.assign({}, attributes);
         const transaction = await transactionRepository.create(
@@ -43,7 +35,7 @@ class TransactionService {
   }
   async update(id, changes, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
@@ -60,7 +52,7 @@ class TransactionService {
   }
   async delete(id, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {

@@ -6,8 +6,7 @@ class TransactionsController {
     try {
       const transactionId = parseInt(req.params.transactionid);
       const attributes = Object.assign({}, req.body);
-      const token = Object.assign({}, req.body);
-      delete attributes.token;
+      const token = req.get("Authorization");
       const transaction = await transactionService.update(
         transactionId,
         attributes,
@@ -27,7 +26,7 @@ class TransactionsController {
   async deleteTransactionById(req, res, next) {
     try {
       const transactionId = parseInt(req.params.transactionid);
-      const token = Object.assign({}, req.body);
+      const token = req.get("Authorization");
       const transaction = await transactionService.delete(transactionId, token);
       if (
         transaction.message === "invalid signature" ||

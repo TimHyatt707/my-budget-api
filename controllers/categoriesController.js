@@ -6,8 +6,7 @@ class CategoriesController {
     try {
       const categoryId = parseInt(req.params.categoryid);
       const attributes = Object.assign({}, req.body);
-      const token = Object.assign({}, req.body);
-      delete attributes.token;
+      const token = req.get("Authorization");
       const category = await categoryService.update(
         categoryId,
         attributes,
@@ -27,7 +26,7 @@ class CategoriesController {
   async deleteCategoryById(req, res, next) {
     try {
       const categoryId = parseInt(req.params.categoryid);
-      const token = Object.assign({}, req.body);
+      const token = req.get("Authorization");
       const category = await categoryService.delete(categoryId, token);
       if (
         category.message === "invalid signature" ||

@@ -9,7 +9,7 @@ class UsersController {
   async getUserById(req, res, next) {
     try {
       const userId = parseInt(req.params.userid);
-      const token = Object.assign({}, req.body);
+      const token = req.get("Authorization");
       const user = await userService.getUserById(userId, token);
       if (
         user.message === "invalid signature" ||
@@ -25,7 +25,7 @@ class UsersController {
   async getTransactionsByUser(req, res, next) {
     try {
       const userId = parseInt(req.params.userid);
-      const token = Object.assign({}, req.body);
+      const token = req.get("Authorization");
       const transactions = await transactionService.getByUserId(userId, token);
       if (
         transactions.message === "invalid signature" ||
@@ -41,7 +41,7 @@ class UsersController {
   async getCategoriesByUser(req, res, next) {
     try {
       const userId = parseInt(req.params.userid);
-      const token = Object.assign({}, req.body);
+      const token = req.get("Authorization");
       const categories = await categoryService.getByUserId(userId, token);
       if (
         categories.message === "invalid signature" ||
@@ -66,8 +66,7 @@ class UsersController {
   async createTransaction(req, res, next) {
     try {
       const attributes = Object.assign({}, req.body);
-      const token = Object.assign({}, attributes);
-      delete attributes.token;
+      const token = req.get("Authorization");
       const userId = parseInt(req.params.userid);
       const transaction = await transactionService.createTransaction(
         userId,
@@ -88,9 +87,8 @@ class UsersController {
   async createCategory(req, res, next) {
     try {
       const attributes = req.body;
-      const token = Object.assign({}, attributes);
+      const token = req.get("Authorization");
       const userId = parseInt(req.params.userid);
-      delete attributes.token;
       const category = await categoryService.createCategory(
         userId,
         attributes,
@@ -110,8 +108,7 @@ class UsersController {
   async updateUser(req, res, next) {
     try {
       const changes = req.body;
-      const token = Object.assign({}, changes);
-      delete changes.token;
+      const token = req.get("Authorization");
       const userId = req.params.userid;
       const updatedUser = await userService.updateUser(userId, changes, token);
       if (
@@ -128,7 +125,7 @@ class UsersController {
   async deleteUser(req, res, next) {
     try {
       const userId = req.params.userid;
-      const token = Object.assign({}, req.body);
+      const token = req.get("Authorization");
       const deletedUser = await userService.deleteUser(userId, token);
       if (
         deletedUser.message === "invalid signature" ||
