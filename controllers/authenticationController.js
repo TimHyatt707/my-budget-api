@@ -4,9 +4,9 @@ const authenticationService = new AuthenticationService();
 class AuthenticationController {
   async login(req, res, next) {
     try {
-      const token = await authenticationService.authenticate(req.body);
-      switch (token) {
-        case !token:
+      const authentication = await authenticationService.authenticate(req.body);
+      switch (authentication) {
+        case !authentication:
           res.status(500).json({ message: "Something went wrong" });
           break;
         case "Invalid email/password":
@@ -19,7 +19,7 @@ class AuthenticationController {
           res.status(400).json({ message: "Bad password" });
           break;
         default:
-          res.json({ token });
+          res.json({ authentication });
           break;
       }
     } catch (error) {

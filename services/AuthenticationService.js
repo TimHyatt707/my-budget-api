@@ -23,8 +23,9 @@ class AuthenticationService {
       if (!passwordCheck) {
         throw "Bad password";
       }
+      const userId = user[0].id;
       const timeIssued = Math.floor(Date.now() / 1000);
-      return jwt.sign(
+      const token = await jwt.sign(
         {
           iss: "mybudget",
           aud: "mybudget",
@@ -33,6 +34,7 @@ class AuthenticationService {
         },
         secret.JWT_KEY
       );
+      return { userId, token };
     } catch (error) {
       return error;
     }
