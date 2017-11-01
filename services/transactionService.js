@@ -1,5 +1,7 @@
 const TransactionRepository = require("./../repositories/TransactionRepository");
 const transactionRepository = new TransactionRepository();
+const CategoryRepository = require("./../repositories/CategoryRepository");
+const categoryRepository = new CategoryRepository();
 const jwt = require("jsonwebtoken");
 const secret = require("./../env");
 
@@ -11,22 +13,41 @@ class TransactionService {
       });
       if (accessToken.sub === id) {
         const transactions = await transactionRepository.getByUser(id);
-        return transactions;
+        const categories = await categoryRepository.getByUser(id);
+        let returnedTransactions = transactions.map(transaction => {
+          categories.map(category => {
+            if (transaction.category_id === category.id) {
+              delete transaction.category_id;
+              transaction.category = category.name;
+            }
+            return category;
+          });
+          return transaction;
+        });
+        return returnedTransactions;
       } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async createTransaction(id, attributes, authentication) {
+  async createTransaction(userId, attributes, authentication) {
     try {
       const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
-        sub: id
+        sub: userId
       });
-      if (accessToken.sub === id) {
+      if (accessToken.sub === userId) {
         const transactionObject = Object.assign({}, attributes);
+        const category = await categoryRepository.getByName(
+          transactionObject.category
+        );
+        delete transactionObject.category;
+        transactionObject.category_id = category[0].id;
+        transactionObject.user_id = userId;
         const transaction = await transactionRepository.create(
           transactionObject
         );
+        delete transaction.category_id;
+        transaction.category = category[0].name;
         return transaction;
       } else throw "invalid signature";
     } catch (error) {
@@ -36,26 +57,33 @@ class TransactionService {
   async update(id, changes, authentication) {
     try {
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
-        sub: id
+        sub: changes.user_id
       });
-      if (accessToken.sub === id) {
+      if (accessToken.sub === ~~changes.user_id) {
         const attributes = Object.assign({}, changes);
+        const category = await categoryRepository.getByName(
+          attributes.category
+        );
+        delete attributes.category;
+        attributes.category_id = category[0].id;
         const updatedTransaction = await transactionRepository.update(
           id,
           attributes
         );
+        delete updatedTransaction.category_id;
+        updatedTransaction.category = category[0].name;
         return updatedTransaction;
       } else throw "invalid signature";
     } catch (error) {
       return error;
     }
   }
-  async delete(id, authentication) {
+  async delete(id, userId, authentication) {
     try {
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
-        sub: id
+        sub: userId
       });
-      if (accessToken.sub === id) {
+      if (accessToken.sub === ~~userId) {
         const deletedTransaction = await transactionRepository.delete(id);
         return deletedTransaction;
       } else throw "invalid signature";

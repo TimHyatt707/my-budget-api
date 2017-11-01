@@ -27,7 +27,12 @@ class TransactionsController {
     try {
       const transactionId = parseInt(req.params.transactionid);
       const token = req.get("Authorization");
-      const transaction = await transactionService.delete(transactionId, token);
+      const userId = req.get("Authenticated");
+      const transaction = await transactionService.delete(
+        transactionId,
+        userId,
+        token
+      );
       if (
         transaction.message === "invalid signature" ||
         transaction.message === "jwt must be provided" ||
