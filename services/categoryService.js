@@ -1,4 +1,6 @@
 const CategoryRepository = require("./../repositories/CategoryRepository");
+const UserRepository = require("./../repositories/UserRepository");
+const userRepository = new UserRepository();
 const categoryRepository = new CategoryRepository();
 const jwt = require("jsonwebtoken");
 const secret = require("./../env");
@@ -33,10 +35,11 @@ class CategoryService {
   }
   async update(id, changes, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
-      if (accessToken.sub === id) {
+      const user = await userRepository.getById(accessToken.sub);
+      if (accessToken.sub === user.id) {
         const attributes = Object.assign({}, changes);
         const updatedCategory = await categoryRepository.update(id, attributes);
         return updatedCategory;
@@ -47,10 +50,11 @@ class CategoryService {
   }
   async delete(id, authentication) {
     try {
-      const accessToken = jwt.verify(authentication.token, secret.JWT_KEY, {
+      const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
-      if (accessToken.sub === id) {
+      const user = await userRepository.getById(accessToken.sub);
+      if (accessToken.sub === user.id) {
         const deletedCategory = await categoryRepository.delete(id);
         return deletedCategory;
       } else throw "invalid signature";

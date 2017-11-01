@@ -41,7 +41,7 @@ class UsersController {
   async getCategoriesByUser(req, res, next) {
     try {
       const userId = parseInt(req.params.userid);
-      const token = req.get("Authorization");
+      const token = req.get("authorization");
       const categories = await categoryService.getByUserId(userId, token);
       if (
         categories.message === "invalid signature" ||
@@ -56,7 +56,6 @@ class UsersController {
   }
   async createUser(req, res, next) {
     try {
-      console.log(req.body);
       const attributes = req.body;
       const user = await userService.createUser(attributes);
       res.json(user);
@@ -90,6 +89,7 @@ class UsersController {
       const attributes = req.body;
       const token = req.get("Authorization");
       const userId = parseInt(req.params.userid);
+      attributes.user_id = userId;
       const category = await categoryService.createCategory(
         userId,
         attributes,
