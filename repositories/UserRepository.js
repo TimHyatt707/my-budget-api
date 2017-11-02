@@ -1,9 +1,10 @@
-const knex = require("./../knex");
-
 class UserRepository {
+  constructor({ db }) {
+    this._db = db;
+  }
   async create(credentials) {
     try {
-      const record = await knex("users")
+      const record = await this._db("users")
         .insert(credentials)
         .returning("*");
       return record;
@@ -13,7 +14,7 @@ class UserRepository {
   }
   async getByEmail(email) {
     try {
-      const record = await knex("users")
+      const record = await this._db("users")
         .where("email", email)
         .returning("*");
       return record;
@@ -23,7 +24,7 @@ class UserRepository {
   }
   async getById(id) {
     try {
-      const [record] = await knex("users")
+      const [record] = await this._db("users")
         .where("id", id)
         .returning("*");
       return record;
@@ -33,7 +34,7 @@ class UserRepository {
   }
   async update(id, changes) {
     try {
-      const [record] = await knex("users")
+      const [record] = await this._db("users")
         .update(changes)
         .where("id", id)
         .returning("*");
@@ -44,7 +45,7 @@ class UserRepository {
   }
   async delete(id) {
     try {
-      const [record] = await knex("users")
+      const [record] = await this._db("users")
         .del()
         .where("id", id)
         .returning("*");

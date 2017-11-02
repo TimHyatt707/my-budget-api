@@ -1,9 +1,10 @@
-const knex = require("./../knex");
-
 class TransactionRepository {
+  constructor({ db }) {
+    this._db = db;
+  }
   async getByUser(id) {
     try {
-      const records = await knex("transactions")
+      const records = await this._db("transactions")
         .where("user_id", id)
         .returning("*");
       return records;
@@ -13,7 +14,7 @@ class TransactionRepository {
   }
   async create(attributes) {
     try {
-      const [record] = await knex("transactions")
+      const [record] = await this._db("transactions")
         .insert(attributes)
         .returning("*");
       return record;
@@ -23,7 +24,7 @@ class TransactionRepository {
   }
   async update(id, changes) {
     try {
-      const [record] = await knex("transactions")
+      const [record] = await this._db("transactions")
         .update(changes)
         .where("id", id)
         .returning("*");
@@ -34,7 +35,7 @@ class TransactionRepository {
   }
   async delete(id) {
     try {
-      const [record] = await knex("transactions")
+      const [record] = await this._db("transactions")
         .del()
         .where("id", id)
         .returning("*");

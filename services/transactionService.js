@@ -1,19 +1,23 @@
-const TransactionRepository = require("./../repositories/TransactionRepository");
-const transactionRepository = new TransactionRepository();
-const CategoryRepository = require("./../repositories/CategoryRepository");
-const categoryRepository = new CategoryRepository();
 const jwt = require("jsonwebtoken");
 const secret = require("./../env");
 
 class TransactionService {
+  constructor({ TransactionRepository, CategoryRepository }) {
+    this._transactionRepository = TransactionRepository;
+    this._categoryRepository = CategoryRepository;
+    this.getByUserId = this.getByUserId.bind(this);
+    this.createTransaction = this.createTransaction.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
+  }
   async getByUserId(id, authentication) {
     try {
       const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
-        const transactions = await transactionRepository.getByUser(id);
-        const categories = await categoryRepository.getByUser(id);
+        const transactions = await this._transactionRepository.getByUser(id);
+        const categories = await this._categoryRepository.getByUser(id);
         let returnedTransactions = transactions.map(transaction => {
           categories.map(category => {
             if (transaction.category_id === category.id) {
@@ -37,13 +41,13 @@ class TransactionService {
       });
       if (accessToken.sub === userId) {
         const transactionObject = Object.assign({}, attributes);
-        const category = await categoryRepository.getByName(
+        const category = await this._categoryRepository.getByName(
           transactionObject.category
         );
         delete transactionObject.category;
         transactionObject.category_id = category[0].id;
         transactionObject.user_id = userId;
-        const transaction = await transactionRepository.create(
+        const transaction = await this._transactionRepository.create(
           transactionObject
         );
         delete transaction.category_id;
@@ -61,12 +65,12 @@ class TransactionService {
       });
       if (accessToken.sub === ~~changes.user_id) {
         const attributes = Object.assign({}, changes);
-        const category = await categoryRepository.getByName(
+        const category = await this._categoryRepository.getByName(
           attributes.category
         );
         delete attributes.category;
         attributes.category_id = category[0].id;
-        const updatedTransaction = await transactionRepository.update(
+        const updatedTransaction = await this._transactionRepository.update(
           id,
           attributes
         );
@@ -84,7 +88,7 @@ class TransactionService {
         sub: userId
       });
       if (accessToken.sub === ~~userId) {
-        const deletedTransaction = await transactionRepository.delete(id);
+        const deletedTransaction = await this._transactionRepository.delete(id);
         return deletedTransaction;
       } else throw "invalid signature";
     } catch (error) {

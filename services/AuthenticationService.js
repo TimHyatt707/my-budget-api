@@ -1,18 +1,18 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secret = require("./../env");
-const UserRepository = require("./../repositories/UserRepository");
-const userRepository = new UserRepository();
-
 class AuthenticationService {
+  constructor({ UserRepository }) {
+    this._userRepository = UserRepository;
+    this.authenticate = this.authenticate.bind(this);
+  }
   async authenticate(loginCredentials) {
     try {
       const credentials = Object.assign({}, loginCredentials);
       if (!credentials.email || !credentials.password) {
         throw "Invalid email/password";
       }
-      //TO DO: VALIDATOR
-      const user = await userRepository.getByEmail(credentials.email);
+      const user = await this._userRepository.getByEmail(credentials.email);
       if (!user.length) {
         throw "Invalid email";
       }

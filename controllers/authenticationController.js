@@ -1,10 +1,13 @@
-const AuthenticationService = require("./../services/AuthenticationService");
-const authenticationService = new AuthenticationService();
-
 class AuthenticationController {
+  constructor({ AuthenticationService }) {
+    this._authenticationService = AuthenticationService;
+    this.login = this.login.bind(this);
+  }
   async login(req, res, next) {
     try {
-      const authentication = await authenticationService.authenticate(req.body);
+      const authentication = await this._authenticationService.authenticate(
+        req.body
+      );
       switch (authentication) {
         case !authentication:
           res.status(500).json({ message: "Something went wrong" });

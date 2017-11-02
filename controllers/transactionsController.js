@@ -1,13 +1,15 @@
-const TransactionService = require("./../services/TransactionService");
-const transactionService = new TransactionService();
-
 class TransactionsController {
+  constructor({ TransactionService }) {
+    this._transactionService = TransactionService;
+    this.updateTransactionById = this.updateTransactionById.bind(this);
+    this.deleteTransactionById = this.deleteTransactionById.bind(this);
+  }
   async updateTransactionById(req, res, next) {
     try {
       const transactionId = parseInt(req.params.transactionid);
       const attributes = Object.assign({}, req.body);
       const token = req.get("Authorization");
-      const transaction = await transactionService.update(
+      const transaction = await this._transactionService.update(
         transactionId,
         attributes,
         token
@@ -28,7 +30,7 @@ class TransactionsController {
       const transactionId = parseInt(req.params.transactionid);
       const token = req.get("Authorization");
       const userId = req.get("Authenticated");
-      const transaction = await transactionService.delete(
+      const transaction = await this._transactionService.delete(
         transactionId,
         userId,
         token

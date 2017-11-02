@@ -1,18 +1,22 @@
-const CategoryRepository = require("./../repositories/CategoryRepository");
-const UserRepository = require("./../repositories/UserRepository");
-const userRepository = new UserRepository();
-const categoryRepository = new CategoryRepository();
 const jwt = require("jsonwebtoken");
 const secret = require("./../env");
 
 class CategoryService {
+  constructor({ CategoryRepository, UserRepository }) {
+    this._categoryRepository = CategoryRepository;
+    this._userRepository = UserRepository;
+    this.getByUserId = this.getByUserId.bind(this);
+    this.createCategory = this.createCategory.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
+  }
   async getByUserId(id, authentication) {
     try {
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
-        const categories = await categoryRepository.getByUser(id);
+        const categories = await this._categoryRepository.getByUser(id);
         return categories;
       } else throw "invalid signature";
     } catch (error) {
@@ -26,7 +30,7 @@ class CategoryService {
       });
       if (accessToken.sub === id) {
         const categoryObject = Object.assign({}, attributes);
-        const category = await categoryRepository.create(categoryObject);
+        const category = await this._categoryRepository.create(categoryObject);
         return category;
       } else throw "invalid signature";
     } catch (error) {
@@ -38,10 +42,13 @@ class CategoryService {
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
-      const user = await userRepository.getById(accessToken.sub);
+      const user = await this._userRepository.getById(accessToken.sub);
       if (accessToken.sub === user.id) {
         const attributes = Object.assign({}, changes);
-        const updatedCategory = await categoryRepository.update(id, attributes);
+        const updatedCategory = await this._categoryRepository.update(
+          id,
+          attributes
+        );
         return updatedCategory;
       } else throw "invalid signature";
     } catch (error) {
@@ -53,9 +60,9 @@ class CategoryService {
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
-      const user = await userRepository.getById(accessToken.sub);
+      const user = await this._userRepository.getById(accessToken.sub);
       if (accessToken.sub === user.id) {
-        const deletedCategory = await categoryRepository.delete(id);
+        const deletedCategory = await this._categoryRepository.delete(id);
         return deletedCategory;
       } else throw "invalid signature";
     } catch (error) {

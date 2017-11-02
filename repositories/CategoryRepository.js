@@ -1,9 +1,10 @@
-const knex = require("./../knex");
-
 class CategoryRepository {
+  constructor({ db }) {
+    this._db = db;
+  }
   async getByName(name) {
     try {
-      const record = await knex("categories")
+      const record = await this._db("categories")
         .where("name", name)
         .returning("*");
       return record;
@@ -13,7 +14,7 @@ class CategoryRepository {
   }
   async getById(id) {
     try {
-      const record = await knex("categories")
+      const record = await this._db("categories")
         .where("id", id)
         .returning("*");
       return record;
@@ -23,7 +24,7 @@ class CategoryRepository {
   }
   async getByUser(id) {
     try {
-      const records = await knex("categories")
+      const records = await this._db("categories")
         .where("user_id", id)
         .returning("*");
       return records;
@@ -33,7 +34,7 @@ class CategoryRepository {
   }
   async create(attributes) {
     try {
-      const [record] = await knex("categories")
+      const [record] = await this._db("categories")
         .insert(attributes)
         .returning("*");
       return record;
@@ -43,7 +44,7 @@ class CategoryRepository {
   }
   async update(id, changes) {
     try {
-      const [record] = await knex("categories")
+      const [record] = await this._db("categories")
         .update(changes)
         .where("id", id)
         .returning("*");
@@ -54,7 +55,7 @@ class CategoryRepository {
   }
   async delete(id) {
     try {
-      const [record] = await knex("categories")
+      const [record] = await this._db("categories")
         .del()
         .where("id", id)
         .returning("*");

@@ -1,8 +1,7 @@
 const express = require("express");
 const Boom = require("Boom");
 const router = express.Router();
-const CategoriesController = require("./../controllers/CategoriesController");
-const categoriesController = new CategoriesController();
+const categoriesController = require("../instances/CategoriesController");
 
 router.patch(
   "/categories/:categoryid",

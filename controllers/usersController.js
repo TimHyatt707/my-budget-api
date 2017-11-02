@@ -1,16 +1,22 @@
-const UserService = require("./../services/UserService");
-const TransactionService = require("./../services/TransactionService");
-const CategoryService = require("./../services/CategoryService");
-const userService = new UserService();
-const categoryService = new CategoryService();
-const transactionService = new TransactionService();
-
 class UsersController {
+  constructor({ userService, categoryService, transactionService }) {
+    this._userService = userService;
+    this._categoryService = categoryService;
+    this._transactionService = transactionService;
+    this.getUserById = this.getUserById.bind(this);
+    this.getTransactionsByUser = this.getTransactionsByUser.bind(this);
+    this.getCategoriesByUser = this.getCategoriesByUser.bind(this);
+    this.createUser = this.createUser.bind(this);
+    this.createTransaction = this.createTransaction.bind(this);
+    this.createCategory = this.createCategory.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
+  }
   async getUserById(req, res, next) {
     try {
       const userId = parseInt(req.params.userid);
       const token = req.get("Authorization");
-      const user = await userService.getUserById(userId, token);
+      const user = await this._userService.getUserById(userId, token);
       if (
         user.message === "invalid signature" ||
         user.message === "jwt must be provided" ||
@@ -26,7 +32,10 @@ class UsersController {
     try {
       const userId = parseInt(req.params.userid);
       const token = req.get("Authorization");
-      const transactions = await transactionService.getByUserId(userId, token);
+      const transactions = await this._transactionService.getByUserId(
+        userId,
+        token
+      );
       if (
         transactions.message === "invalid signature" ||
         transactions.message === "jwt must be provided" ||
@@ -42,7 +51,7 @@ class UsersController {
     try {
       const userId = parseInt(req.params.userid);
       const token = req.get("authorization");
-      const categories = await categoryService.getByUserId(userId, token);
+      const categories = await this._categoryService.getByUserId(userId, token);
       if (
         categories.message === "invalid signature" ||
         categories.message === "jwt must be provided" ||
@@ -57,7 +66,7 @@ class UsersController {
   async createUser(req, res, next) {
     try {
       const attributes = req.body;
-      const user = await userService.createUser(attributes);
+      const user = await this._userService.createUser(attributes);
       res.json(user);
     } catch (error) {
       next(error);
@@ -68,7 +77,7 @@ class UsersController {
       const attributes = Object.assign({}, req.body);
       const token = req.get("Authorization");
       const userId = parseInt(req.params.userid);
-      const transaction = await transactionService.createTransaction(
+      const transaction = await this._transactionService.createTransaction(
         userId,
         attributes,
         token
@@ -90,7 +99,7 @@ class UsersController {
       const token = req.get("Authorization");
       const userId = parseInt(req.params.userid);
       attributes.user_id = userId;
-      const category = await categoryService.createCategory(
+      const category = await this._categoryService.createCategory(
         userId,
         attributes,
         token
@@ -111,7 +120,11 @@ class UsersController {
       const changes = req.body;
       const token = req.get("Authorization");
       const userId = req.params.userid;
-      const updatedUser = await userService.updateUser(userId, changes, token);
+      const updatedUser = await this._userService.updateUser(
+        userId,
+        changes,
+        token
+      );
       if (
         updatedUser.message === "invalid signature" ||
         updatedUser.message === "jwt must be provided" ||
@@ -127,7 +140,7 @@ class UsersController {
     try {
       const userId = req.params.userid;
       const token = req.get("Authorization");
-      const deletedUser = await userService.deleteUser(userId, token);
+      const deletedUser = await this._userService.deleteUser(userId, token);
       if (
         deletedUser.message === "invalid signature" ||
         deletedUser.message === "jwt must be provided" ||
