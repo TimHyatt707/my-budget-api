@@ -46,7 +46,7 @@ class UsersController {
   async getCategoriesByUser(req, res, next) {
     try {
       const userId = parseInt(req.params.userid);
-      const token = req.get("authorization");
+      const token = req.get("Authorization");
       const categories = await this._categoryService.getByUserId(userId, token);
       res.json(categories);
     } catch (error) {
@@ -61,11 +61,7 @@ class UsersController {
       const user = await this._userService.createUser(attributes);
       res.json(user);
     } catch (error) {
-      if (error.message === "users_email_unique") {
-        res.sendStatus(400);
-      } else {
-        res.sendStatus(500);
-      }
+      res.sendStatus(400);
     }
   }
   async createTransaction(req, res, next) {

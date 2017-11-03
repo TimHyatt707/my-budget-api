@@ -1,5 +1,6 @@
 const TransactionService = require("../services/TransactionService");
 
 module.exports = new TransactionService({
-  TransactionRepository: require("./TransactionRepository")
+  TransactionRepository: require("./TransactionRepository"),
+  CategoryRepository: require("./CategoryRepository")
 });
