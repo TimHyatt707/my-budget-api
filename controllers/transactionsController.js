@@ -14,15 +14,13 @@ class TransactionsController {
         attributes,
         token
       );
-      if (
-        transaction.message === "invalid signature" ||
-        transaction.message === "jwt must be provided" ||
-        transaction === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(transaction);
+      res.json(transaction);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else {
+        res.status(400);
+      }
     }
   }
   async deleteTransactionById(req, res, next) {
@@ -35,15 +33,11 @@ class TransactionsController {
         userId,
         token
       );
-      if (
-        transaction.message === "invalid signature" ||
-        transaction.message === "jwt must be provided" ||
-        transaction === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(transaction);
+      res.json(transaction);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
 }

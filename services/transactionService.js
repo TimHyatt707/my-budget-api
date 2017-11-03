@@ -66,6 +66,9 @@ class TransactionService {
   }
   async update(id, changes, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: changes.user_id
       });
@@ -83,20 +86,23 @@ class TransactionService {
         delete updatedTransaction.category_id;
         updatedTransaction.category = category[0].name;
         return updatedTransaction;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }
   }
   async delete(id, userId, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: userId
       });
       if (accessToken.sub === ~~userId) {
         const deletedTransaction = await this._transactionRepository.delete(id);
         return deletedTransaction;
-      } else throw "invalid signature";
+      } else throw Error("Forbidden");
     } catch (error) {
       return error;
     }
