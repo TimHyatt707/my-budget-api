@@ -8,25 +8,16 @@ class AuthenticationController {
       const authentication = await this._authenticationService.authenticate(
         req.body
       );
-      switch (authentication) {
-        case !authentication:
-          res.status(500).json({ message: "Something went wrong" });
-          break;
+      res.json({ authentication });
+    } catch (error) {
+      switch (error.message) {
         case "Invalid email/password":
-          res.status(400).json({ message: "Bad email/password" });
-          break;
-        case "Invalid email":
-          res.status(400).json({ message: "Invalid email" });
-          break;
-        case "Bad password":
-          res.status(400).json({ message: "Bad password" });
+          res.sendStatus(400);
           break;
         default:
-          res.json({ authentication });
+          res.sendStatus(500);
           break;
       }
-    } catch (error) {
-      return error;
     }
   }
 }

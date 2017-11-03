@@ -4,8 +4,8 @@ const jwt = require("jsonwebtoken");
 const pick = require("lodash.pick");
 
 class UserService {
-  constructor({ userRepository }) {
-    this._userRepository = userRepository;
+  constructor({ UserRepository }) {
+    this._userRepository = UserRepository;
     this.createUser = this.createUser.bind(this);
     this.getUserById = this.getUserById.bind(this);
     this.updateUser = this.updateUser.bind(this);
@@ -23,7 +23,11 @@ class UserService {
       const user = await this._userRepository.create(credentials);
       return pick(user[0], ["id", "username", "email"]);
     } catch (error) {
-      return error;
+      if (error.message === "users_email_unique")
+        throw new Error("users_email_unique");
+      else {
+        throw new Error("Something went wrong");
+      }
     }
   }
   async getUserById(id, authentication) {

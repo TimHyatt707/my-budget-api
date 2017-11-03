@@ -9,7 +9,9 @@ class UserRepository {
         .returning("*");
       return record;
     } catch (error) {
-      return error;
+      if (error.constraint === "users_email_unique") {
+        throw new Error("users_email_unique");
+      } else throw new Error(error);
     }
   }
   async getByEmail(email) {
@@ -17,6 +19,9 @@ class UserRepository {
       const record = await this._db("users")
         .where("email", email)
         .returning("*");
+      if (!record.length) {
+        throw new Error("Invalid email");
+      }
       return record;
     } catch (error) {
       return error;

@@ -10,18 +10,18 @@ class AuthenticationService {
     try {
       const credentials = Object.assign({}, loginCredentials);
       if (!credentials.email || !credentials.password) {
-        throw "Invalid email/password";
+        throw new Error("Invalid email/password");
       }
       const user = await this._userRepository.getByEmail(credentials.email);
       if (!user.length) {
-        throw "Invalid email";
+        throw new Error("Invalid email/password");
       }
       const passwordCheck = await bcrypt.compare(
         credentials.password,
         user[0].hashed_password
       );
       if (!passwordCheck) {
-        throw "Bad password";
+        throw new Error("Invalid email/password");
       }
       const userId = user[0].id;
       const timeIssued = Math.floor(Date.now() / 1000);
@@ -36,7 +36,9 @@ class AuthenticationService {
       );
       return { userId, token };
     } catch (error) {
-      return error;
+      if (error.message === "Invalid email/password") {
+        throw new Error("Invalid email/password");
+      } else throw new Error("Something went wrong");
     }
   }
 }

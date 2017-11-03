@@ -61,7 +61,11 @@ class UsersController {
       const user = await this._userService.createUser(attributes);
       res.json(user);
     } catch (error) {
-      res.status(400);
+      if (error.message === "users_email_unique") {
+        res.sendStatus(400);
+      } else {
+        res.sendStatus(500);
+      }
     }
   }
   async createTransaction(req, res, next) {
