@@ -45,6 +45,9 @@ class CategoryService {
   }
   async update(id, changes, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
@@ -56,13 +59,16 @@ class CategoryService {
           attributes
         );
         return updatedCategory;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }
   }
   async delete(id, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
@@ -70,7 +76,7 @@ class CategoryService {
       if (accessToken.sub === user.id) {
         const deletedCategory = await this._categoryRepository.delete(id);
         return deletedCategory;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }

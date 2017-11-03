@@ -14,15 +14,13 @@ class CategoriesController {
         attributes,
         token
       );
-      if (
-        category.message === "invalid signature" ||
-        category.message === "jwt must be provided" ||
-        category === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(category);
+      res.json(category);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else {
+        res.status(400);
+      }
     }
   }
   async deleteCategoryById(req, res, next) {
@@ -30,15 +28,11 @@ class CategoriesController {
       const categoryId = parseInt(req.params.categoryid);
       const token = req.get("Authorization");
       const category = await this._categoryService.delete(categoryId, token);
-      if (
-        category.message === "invalid signature" ||
-        category.message === "jwt must be provided" ||
-        category === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(category);
+      res.json(category);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
 }
