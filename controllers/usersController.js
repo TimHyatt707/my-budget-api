@@ -17,15 +17,15 @@ class UsersController {
       const userId = parseInt(req.params.userid);
       const token = req.get("Authorization");
       const user = await this._userService.getUserById(userId, token);
-      if (
-        user.message === "invalid signature" ||
-        user.message === "jwt must be provided" ||
-        user === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(user);
+      res.json(user);
     } catch (error) {
-      next(error);
+      if (error === "User not found") {
+        res.status(404);
+      } else if (error === "Bad token") {
+        res.status(401);
+      } else if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
   async getTransactionsByUser(req, res, next) {
@@ -36,15 +36,11 @@ class UsersController {
         userId,
         token
       );
-      if (
-        transactions.message === "invalid signature" ||
-        transactions.message === "jwt must be provided" ||
-        transactions === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(transactions);
+      res.json(transactions);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
   async getCategoriesByUser(req, res, next) {
@@ -52,15 +48,11 @@ class UsersController {
       const userId = parseInt(req.params.userid);
       const token = req.get("authorization");
       const categories = await this._categoryService.getByUserId(userId, token);
-      if (
-        categories.message === "invalid signature" ||
-        categories.message === "jwt must be provided" ||
-        categories === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(categories);
+      res.json(categories);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
   async createUser(req, res, next) {
@@ -69,7 +61,7 @@ class UsersController {
       const user = await this._userService.createUser(attributes);
       res.json(user);
     } catch (error) {
-      next(error);
+      res.status(400);
     }
   }
   async createTransaction(req, res, next) {
@@ -82,15 +74,11 @@ class UsersController {
         attributes,
         token
       );
-      if (
-        transaction.message === "invalid signature" ||
-        transaction.message === "jwt must be provided" ||
-        transaction === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(transaction);
+      res.json(transaction);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
   async createCategory(req, res, next) {
@@ -104,15 +92,11 @@ class UsersController {
         attributes,
         token
       );
-      if (
-        category.message === "invalid signature" ||
-        category.message === "jwt must be provided" ||
-        category === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(category);
+      res.json(category);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
   async updateUser(req, res, next) {
@@ -125,15 +109,11 @@ class UsersController {
         changes,
         token
       );
-      if (
-        updatedUser.message === "invalid signature" ||
-        updatedUser.message === "jwt must be provided" ||
-        updatedUser === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(updatedUser);
+      res.json(updatedUser);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
   async deleteUser(req, res, next) {
@@ -141,15 +121,11 @@ class UsersController {
       const userId = req.params.userid;
       const token = req.get("Authorization");
       const deletedUser = await this._userService.deleteUser(userId, token);
-      if (
-        deletedUser.message === "invalid signature" ||
-        deletedUser.message === "jwt must be provided" ||
-        deletedUser === "invalid signature"
-      ) {
-        res.status(401).json({ message: "Unauthorized" });
-      } else res.json(deletedUser);
+      res.json(deletedUser);
     } catch (error) {
-      next(error);
+      if (error === "Forbidden") {
+        res.status(403);
+      } else res.status(400);
     }
   }
 }

@@ -12,19 +12,25 @@ class CategoryService {
   }
   async getByUserId(id, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
         const categories = await this._categoryRepository.getByUser(id);
         return categories;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }
   }
   async createCategory(id, attributes, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
@@ -32,7 +38,7 @@ class CategoryService {
         const categoryObject = Object.assign({}, attributes);
         const category = await this._categoryRepository.create(categoryObject);
         return category;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }

@@ -12,6 +12,9 @@ class TransactionService {
   }
   async getByUserId(id, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
@@ -29,13 +32,16 @@ class TransactionService {
           return transaction;
         });
         return returnedTransactions;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }
   }
   async createTransaction(userId, attributes, authentication) {
     try {
+      if (isNaN(userId)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
         sub: userId
       });
@@ -53,7 +59,7 @@ class TransactionService {
         delete transaction.category_id;
         transaction.category = category[0].name;
         return transaction;
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }

@@ -13,6 +13,9 @@ class UserService {
   }
   async createUser(attributes) {
     try {
+      if (!attributes.username || !attributes.password || !attributes.email) {
+        throw new Error("Bad Request");
+      }
       const credentials = Object.assign({}, attributes);
       const hashedPassword = await bcrypt.hash(credentials.password, 12);
       delete credentials.password;
@@ -25,19 +28,31 @@ class UserService {
   }
   async getUserById(id, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
+      if (!accessToken) {
+        throw new Error("Bad token");
+      }
       if (accessToken.sub === id) {
         const user = await this._userRepository.getById(id);
+        if (!user) {
+          throw new Error("User not found");
+        }
         return pick(user, ["id", "username", "email"]);
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
-      return error;
+      throw new Error(error);
     }
   }
   async updateUser(id, changes, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
@@ -48,20 +63,23 @@ class UserService {
           changesObject
         );
         return pick(updatedUser, ["id", "username", "email"]);
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }
   }
   async deleteUser(id, authentication) {
     try {
+      if (isNaN(id)) {
+        throw new Error("Bad Request");
+      }
       const accessToken = jwt.verify(authentication, secret.JWT_KEY, {
         sub: id
       });
       if (accessToken.sub === id) {
         const deletedUser = await this._userRepository.delete(id);
         return pick(deletedUser, ["id", "username", "email"]);
-      } else throw "invalid signature";
+      } else throw new Error("Forbidden");
     } catch (error) {
       return error;
     }
