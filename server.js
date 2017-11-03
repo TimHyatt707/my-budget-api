@@ -21,6 +21,10 @@ server.all("*", (req, res) => {
   res.sendStatus(404);
 });
 
-server.listen(PORT, () => {
-  console.log(`Listening on Port:${PORT}`); // eslint-disable-line no-console
-});
+if (!module.parent) {
+  server.listen(PORT, () => {
+    console.log(`Listening on Port:${PORT}`); // eslint-disable-line no-console
+  });
+}
+
+module.exports = server;
