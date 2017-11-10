@@ -3,7 +3,7 @@ const Boom = require("Boom");
 const router = express.Router();
 const usersController = require("../instances/UsersController");
 
-router.get("/users/:userid(\\d+)/", usersController.getUserById);
+router.get("/user", usersController.getUserById);
 router.get(
   "/users/:userid(\\d+)/categories",
   usersController.getCategoriesByUser

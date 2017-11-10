@@ -14,9 +14,8 @@ class UsersController {
   }
   async getUserById(req, res, next) {
     try {
-      const userId = parseInt(req.params.userid);
       const token = req.get("Authorization");
-      const user = await this._userService.getUserById(userId, token);
+      const user = await this._userService.getUserById(token);
       res.json(user);
     } catch (error) {
       if (error === "User not found") {

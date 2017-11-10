@@ -30,24 +30,17 @@ class UserService {
       }
     }
   }
-  async getUserById(id, authentication) {
+  async getUserById(authentication) {
     try {
-      if (isNaN(id)) {
-        throw new Error("Bad Request");
-      }
-      const accessToken = await jwt.verify(authentication, secret.JWT_KEY, {
-        sub: id
-      });
+      const accessToken = await jwt.verify(authentication, secret.JWT_KEY);
       if (!accessToken) {
         throw new Error("Bad token");
       }
-      if (accessToken.sub === id) {
-        const user = await this._userRepository.getById(id);
-        if (!user) {
-          throw new Error("User not found");
-        }
-        return pick(user, ["id", "username", "email"]);
-      } else throw new Error("Forbidden");
+      const user = await this._userRepository.getById(accessToken.sub);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      return pick(user, ["id", "username", "email"]);
     } catch (error) {
       throw new Error(error);
     }
