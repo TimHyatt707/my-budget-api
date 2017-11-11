@@ -47,18 +47,21 @@ class TransactionService {
       });
       if (accessToken.sub === userId) {
         const transactionObject = Object.assign({}, attributes);
-        const category = await this._categoryRepository.getByName(
-          transactionObject.category
-        );
-        delete transactionObject.category;
-        transactionObject.category_id = category[0].id;
-        transactionObject.user_id = userId;
-        const transaction = await this._transactionRepository.create(
-          transactionObject
-        );
-        delete transaction.category_id;
-        transaction.category = category[0].name;
-        return transaction;
+        const categories = await this._categoryRepository.getByUser(userId);
+        for (let i = 0; i < categories.length; i++) {
+          if (transactionObject.category === categories[i].name) {
+            delete transactionObject.category;
+            transactionObject.category_id = categories[i].id;
+            transactionObject.user_id = userId;
+            const transaction = await this._transactionRepository.create(
+              transactionObject
+            );
+            delete transaction.category_id;
+            transaction.category = categories[i].name;
+            return transaction;
+          }
+        }
+        throw new Error("Bad Request");
       } else throw new Error("Forbidden");
     } catch (error) {
       return error;
