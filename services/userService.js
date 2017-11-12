@@ -4,8 +4,9 @@ const jwt = require("jsonwebtoken");
 const pick = require("lodash.pick");
 
 class UserService {
-  constructor({ UserRepository }) {
+  constructor({ UserRepository, UserValidator }) {
     this._userRepository = UserRepository;
+    this._UserValidator = UserValidator;
     this.createUser = this.createUser.bind(this);
     this.getUserById = this.getUserById.bind(this);
     this.updateUser = this.updateUser.bind(this);
@@ -16,7 +17,8 @@ class UserService {
       if (!attributes.username || !attributes.password || !attributes.email) {
         throw new Error("Bad Request");
       }
-      const credentials = Object.assign({}, attributes);
+      let credentials = Object.assign({}, attributes);
+      credentials = await this._UserValidator.validate(credentials, "create");
       const hashedPassword = await bcrypt.hash(credentials.password, 12);
       delete credentials.password;
       credentials.hashed_password = hashedPassword;

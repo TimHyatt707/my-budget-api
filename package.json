@@ -21,7 +21,8 @@
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "mocha": "^4.0.1",
-    "pg": "^7.3.0"
+    "pg": "^7.3.0",
+    "yup": "^0.23.0"
   },
   "devDependencies": {
     "body-parser": "^1.18.2",
