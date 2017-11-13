@@ -1,16 +1,28 @@
 const request = require("supertest");
 const server = require("../server");
 
-describe("GET /users/:userid", () => {
-  it("should return 200 status code", () => {
+describe("POST A USER /users", () => {
+  it("should return 400 status code if bad request", done => {
     return request(server)
-      .get("/users/:userid")
-      .field("Authorization", "sometoken")
+      .post("/users")
       .then(response => {
-        console.log(response);
-        expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(400);
+        done();
       });
-
-    // (response.body.email, 'something@something.com', response.body.username, 'Regulator')
+  });
+  it("should return 200 status code", done => {
+    let user = {
+      email: "email@emailworld.com",
+      username: "something",
+      password: "pass"
+    };
+    return request(server)
+      .post("/users")
+      .set("Content-Type", "application/json")
+      .send(user)
+      .then(response => {
+        expect(response.statusCode).toBe(200);
+        done();
+      });
   });
 });
