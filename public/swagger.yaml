@@ -1,0 +1,329 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: my-budget API
+  description: API for running CRUD operations for the my-budget application
+basePath: /
+tags:
+- name: "user"
+  description: "Everything about users"
+- name: "categories"
+  description: "Everything about categories"
+- name: "transactions"
+  description: "Everything about transactions"
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /users:
+    post:
+      tags:
+       - user
+      description: posts a new user to the db
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "An object with a username, password, and email"
+        required: true
+        schema:
+          $ref: '#/definitions/userObj'
+      responses:
+        '200':
+          description: new user was succesfully created
+          schema:
+            type: object
+            $ref: '#/definitions/userObj'
+        '400':
+          description: 'Invalid input'
+  /login:
+    post:
+      tags:
+      - 'login'
+      description: 'logs a user into the website'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - in: 'body'
+        name: 'request'
+        description: 'The email and password'
+        required: true
+        schema:
+          $ref: '#/definitions/login'
+      responses:
+        '200':
+          description: 'Successful operation'
+          schema:
+            type: 'string'
+        '400':
+          description: 'Invalid username/password'
+  /users/{userid}/categories:
+    get:
+      tags:
+        - categories
+      description: gets the categories in the db
+      produces:
+        - application/json
+      parameters:
+        - name: 'userid'
+          in: 'path'
+          description: 'gets the categories of a specific user'
+          required: true
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: categories succesfully retrieved
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/category'
+    post:
+      tags:
+       - categories
+      description: posts a new category in the db
+      produces:
+        - application/json
+      parameters:
+      - name: 'userid'
+        in: 'path'
+        description: 'id of the user who is posting a new category'
+        required: true
+        type: 'integer'
+        format: 'int64'
+      - in: 'body'
+        name: 'category'
+        description: 'inputs of the category being posted'
+        schema:
+          type: object
+      responses:
+        '200':
+          description: category was successfully created
+          schema:
+            type: object
+            items:
+             $ref: '#/definitions/category'
+  /users/{userid}/transactions:
+    get:
+      tags:
+       - transactions
+      description: All of the transactions of a user
+      produces:
+       - application/json
+      parameters:
+      - name: "userid"
+        in: "path"
+        description: "Id of user's transactions"
+        required: true
+        type: 'integer'
+        format: 'int64'
+      responses:
+        '200':
+          description: transactions by user id
+    post:
+      tags:
+       - transactions
+      description: posts a new transaction to the db
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - name: 'userid'
+        in: 'path'
+        description: 'id of the user who is posting a new category'
+        required: true
+        type: 'integer'
+        format: 'int64'
+      - in: 'body'
+        name: 'body'
+        description: 'An object with a name, category_id, user_id, and amount'
+        required: true
+        schema:
+          $ref: '#/definitions/transaction'
+      responses:
+        '200':
+          description: transaction was successfully posted
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/transaction'
+        '400':
+          description: 'Invalid Input'
+  /transactions/{transactionid}:
+    patch:
+      tags:
+       - transactions
+      description: updates a transaction in the db
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: 'body'
+        name: 'body'
+        description: 'object of changes to be applied to transaction'
+        schema:
+          $ref: '#/definitions/transaction'
+      responses:
+        '200':
+          description: transaction was successfully updated
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/transaction'
+        '400':
+          description: 'Invalid ID'
+        '404':
+          description: 'transaction not found'
+    delete:
+      tags:
+       - transactions
+      description: deletes a transaction in the db
+      produces:
+        - application/json
+      parameters:
+      - name: 'transactionid'
+        in: 'path'
+        description: 'deletes a transaction in the db with the matching id'
+        required: true
+        type: 'integer'
+        format: 'int64'
+      responses:
+        '200':
+          description: transaction was successfully deleted
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/transaction'
+        '400':
+          description: Invalid ID
+  /categories/{categoryid}:
+    patch:
+      tags:
+       - categories
+      description: updates a category in the db
+      produces:
+        - application/json
+      parameters:
+      - name: 'categoryid'
+        in: 'path'
+        description: 'retrieves a category by id'
+        required: true
+        type: 'integer'
+        format: 'int64'
+      responses:
+        '200':
+          description: transaction was successfully updated
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/category'
+        '400':
+          description: 'Invalid ID'
+        '404':
+          description: 'category not found'
+    delete:
+      tags:
+       - categories
+      description: deletes a category in the db
+      produces:
+        - application/json
+      parameters:
+      - name: 'categoryid'
+        in: 'path'
+        description: 'retrieves a category by id'
+        required: true
+        type: 'integer'
+        format: 'int64'
+      responses:
+        '200':
+          description: transaction was successfully deleted
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/category'
+        '400':
+          description: 'Invalid ID'
+definitions:
+  login:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  userObj:
+    type: object
+    required:
+      - id
+      - username
+      - hashed_password
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      hashed_password:
+        type: string
+      created_at:
+        type: string
+      updated_at:
+        type: string
+  transaction:
+    type: object
+    required:
+      - id
+      - user_id
+      - category_id
+      - name
+      - amount
+    properties:
+      id:
+        type: integer
+        format: int64
+      user_id:
+        type: integer
+      category_id:
+        type: integer
+      name:
+        type: string
+      amount:
+        type: number
+      created_at:
+        type: string
+      updated_at:
+        type: string
+  category:
+    type: object
+    required:
+      - id
+      - user_id
+      - name
+      - limit
+    properties:
+      id:
+        type: integer
+        format: int64
+      user_id:
+        type: integer
+      name:
+        type: string
+      limit:
+        type: number
+      created_at:
+        type: string
+      updated_at:
+        type: string
