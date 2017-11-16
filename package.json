@@ -2,7 +2,7 @@
   "name": "my-budget-api",
   "version": "1.0.0",
   "description": "api for the my-budget app",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest",
     "test-mocha": "mocha",
