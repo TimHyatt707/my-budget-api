@@ -6,13 +6,15 @@
   "scripts": {
     "test": "jest",
     "test-mocha": "mocha",
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "start-dev": "nodemon server.js",
     "knex": "knex"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
     "boom": "^6.0.0",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
@@ -24,7 +26,6 @@
     "yup": "^0.23.0"
   },
   "devDependencies": {
-    "body-parser": "^1.18.2",
     "chai": "^4.1.2",
     "eslint": "^4.10.0",
     "jest": "^21.2.1",
@@ -35,5 +36,8 @@
     "nodemon": "^1.12.1",
     "superagent": "^3.8.0",
     "supertest": "^3.0.0"
+  },
+  "engines": {
+    "node": "8.4.0"
   }
 }
