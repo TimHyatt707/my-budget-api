@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const PORT = parseInt(process.env.PORT) || 8000;
-const usersRouter = require("./routes/users");
 const cors = require("cors");
+const usersRouter = require("./routes/users");
 const categoriesRouter = require("./routes/categories");
 const transactionsRouter = require("./routes/transactions");
 const authenticationRouter = require("./routes/authentication");
