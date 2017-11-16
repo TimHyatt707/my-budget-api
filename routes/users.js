@@ -1,7 +1,7 @@
 const express = require("express");
 const Boom = require("boom");
 const router = express.Router();
-const usersController = require("../instances/UsersController");
+const usersController = require("../instances/usersController");
 
 router.get("/user", usersController.getUserById);
 router.get(
