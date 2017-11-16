@@ -1,7 +1,7 @@
 const UsersController = require("../controllers/UsersController");
 
 module.exports = new UsersController({
-  userService: require("./UserService"),
-  categoryService: require("./CategoryService"),
-  transactionService: require("./TransactionService")
+  userService: require("./userService"),
+  categoryService: require("./categoryService"),
+  transactionService: require("./transactionService")
 });
