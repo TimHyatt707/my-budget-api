@@ -1,4 +1,5 @@
 const express = require("express");
+const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const PORT = parseInt(process.env.PORT) || 8000;
 const cors = require("cors");
@@ -8,6 +9,7 @@ const transactionsRouter = require("./routes/transactions");
 const authenticationRouter = require("./routes/authentication");
 
 const server = express();
+server.use(morgan("combined"));
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 server.use(cors());
